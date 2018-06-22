@@ -1,6 +1,6 @@
 # Deploy Transit #1 Bootstraps
-# 
 #
+# bucketname needs to be replaced with S3 bucket for bootstrapping.
 # Create a new Palo Alto Networks VM-series Firewall with
 # bootstrapping from a S3 bucket
 #### Create IAM roles to launch firewall bootstrapping ####
@@ -35,12 +35,12 @@ resource "aws_iam_role_policy" "FirewallBootstrapRolePolicyServices" {
     {
       "Effect": "Allow",
       "Action": "s3:ListBucket",
-      "Resource": "arn:aws:s3:::wbtransit1"
+      "Resource": "arn:aws:s3:::bucketname"
     },
     {
     "Effect": "Allow",
     "Action": "s3:GetObject",
-    "Resource": "arn:aws:s3:::wbtransit1/*"
+    "Resource": "arn:aws:s3:::bucketname/*"
     }
   ]
 }
@@ -146,7 +146,7 @@ resource "aws_instance" "FWInstance" {
   }
 ###This will be the place for Bootstrapping the Firewall one config per AZ. Terraform does not like list interpolation and variables currently##
    #user_data = "${base64encode(join("", list("vmseries-bootstrap-aws-s3bucket=", var.MasterS3Bucket)))}"
-   user_data = "vmseries-bootstrap-aws-s3bucket=wbtransit1"
+   user_data = "vmseries-bootstrap-aws-s3bucket=bucketname"
   tags {
     "Name" = "${join("", list(var.MainStackName, "FW-AZ-${count.index +1}"))}"
   }
